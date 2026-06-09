@@ -1,10 +1,10 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppointmentsList from "./components/appointments/AppointmentsList";
 import NewAppointmentForm from "./components/appointments/NewAppointmentForm";
+import EditAppointmentForm from "./components/appointments/EditAppointmentForm";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,6 +15,7 @@ root.render(
         <Route path="appointments">
           <Route index element={<AppointmentsList />} />
           <Route path="new" element={<NewAppointmentForm />} />
+          <Route path=":id/edit" element={<EditAppointmentForm />} />
         </Route>
       </Route>
     </Routes>

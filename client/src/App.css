@@ -115,6 +115,11 @@
   color: #9f1239;
 }
 
+.status-badge--completed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
 .appt-actions {
   display: flex;
   align-items: center;

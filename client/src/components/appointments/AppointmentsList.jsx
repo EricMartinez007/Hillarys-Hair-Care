@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Input } from 'reactstrap'
-import { getAppointments, cancelAppointment } from '../../data/appointmentsData'
+import { getAppointments, completeAppointment, cancelAppointment } from '../../data/appointmentsData'
 
 export default function AppointmentsList() {
   const [appointments, setAppointments] = useState([])
@@ -11,6 +11,15 @@ export default function AppointmentsList() {
   useEffect(() => {
     getAppointments().then(setAppointments)
   }, [])
+
+  const handleComplete = async (id) => {
+    const res = await completeAppointment(id)
+    if (res.ok) {
+      setAppointments(prev =>
+        prev.map(a => a.id === id ? { ...a, status: 'Completed' } : a)
+      )
+    }
+  }
 
   const handleCancel = async (id) => {
     const res = await cancelAppointment(id)
@@ -82,7 +91,10 @@ export default function AppointmentsList() {
                 </span>
                 {appt.status === 'Scheduled' && (
                   <div className="appt-buttons">
-                    <Button size="sm" outline>Edit</Button>
+                    <Button size="sm" outline onClick={() => navigate(`/appointments/${appt.id}/edit`)}>Edit</Button>
+                    <Button size="sm" outline color="success" onClick={() => handleComplete(appt.id)}>
+                      Complete
+                    </Button>
                     <Button size="sm" outline color="danger" onClick={() => handleCancel(appt.id)}>
                       Cancel
                     </Button>

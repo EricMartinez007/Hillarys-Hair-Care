@@ -3,6 +3,8 @@ namespace HillarysHair.Models.DTOs;
 public class AppointmentDTO
 {
     public int Id { get; set; }
+    public int StylistId { get; set; }
+    public int CustomerId { get; set; }
     public string StylistName { get; set; }
     public string CustomerName { get; set; }
     public DateTime ScheduledAt { get; set; }
@@ -11,7 +13,7 @@ public class AppointmentDTO
     public List<ServiceDTO> Services { get; set; }
 }
 
-public class AppointmentCreateDTO
+public class AppointmentFormDTO
 {
     public int StylistId { get; set; }
     public int CustomerId { get; set; }

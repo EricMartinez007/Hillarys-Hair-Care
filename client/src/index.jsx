@@ -7,6 +7,8 @@ import NewAppointmentForm from "./components/appointments/NewAppointmentForm";
 import EditAppointmentForm from "./components/appointments/EditAppointmentForm";
 import CustomersList from "./components/customers/CustomersList";
 import NewCustomerForm from "./components/customers/NewCustomerForm";
+import StylistsList from "./components/stylists/StylistsList";
+import NewStylistForm from "./components/stylists/NewStylistForm";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -22,6 +24,10 @@ root.render(
         <Route path="customers">
           <Route index element={<CustomersList />} />
           <Route path="new" element={<NewCustomerForm />} />
+        </Route>
+        <Route path="stylists">
+          <Route index element={<StylistsList />} />
+          <Route path="new" element={<NewStylistForm />} />
         </Route>
       </Route>
     </Routes>

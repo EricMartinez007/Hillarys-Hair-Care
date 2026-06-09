@@ -43,6 +43,75 @@ app.MapGet("/api/stylists", (HillarysHairDbContext db) =>
         .ToList();
 });
 
+app.MapGet("/api/stylists/all", (HillarysHairDbContext db) =>
+{
+    return db.Stylists
+        .Select(s => new StylistDTO
+        {
+            Id = s.Id,
+            Name = s.Name,
+            Phone = s.Phone,
+            Email = s.Email,
+            IsActive = s.IsActive
+        })
+        .ToList();
+});
+
+app.MapPost("/api/stylists", (HillarysHairDbContext db, StylistCreateDTO newDTO) =>
+{
+    Stylist stylist = new Stylist
+    {
+        Name = newDTO.Name,
+        Phone = newDTO.Phone,
+        Email = newDTO.Email,
+        IsActive = true
+    };
+
+    db.Stylists.Add(stylist);
+    db.SaveChanges();
+
+    return Results.Created($"/stylists/{stylist.Id}", new StylistDTO
+    {
+        Id = stylist.Id,
+        Name = stylist.Name,
+        Phone = stylist.Phone,
+        Email = stylist.Email,
+        IsActive = stylist.IsActive
+    });
+});
+
+app.MapPatch("/api/stylists/{id}/deactivate", (HillarysHairDbContext db, int id) =>
+{
+    Stylist? stylist = db.Stylists.SingleOrDefault(s => s.Id == id);
+
+    if (stylist == null)
+        return Results.NotFound();
+
+    if (!stylist.IsActive)
+        return Results.BadRequest("Stylist is already inactive.");
+
+    stylist.IsActive = false;
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
+app.MapPatch("/api/stylists/{id}/activate", (HillarysHairDbContext db, int id) =>
+{
+    Stylist? stylist = db.Stylists.SingleOrDefault(s => s.Id == id);
+
+    if (stylist == null)
+        return Results.NotFound();
+
+    if (stylist.IsActive)
+        return Results.BadRequest("Stylist is already active.");
+
+    stylist.IsActive = true;
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
 // Customers
 app.MapGet("/api/customers", (HillarysHairDbContext db) =>
 {

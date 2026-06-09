@@ -57,6 +57,27 @@ app.MapGet("/api/customers", (HillarysHairDbContext db) =>
         .ToList();
 });
 
+app.MapPost("/api/customers", (HillarysHairDbContext db, CustomerCreateDTO newDTO) =>
+{
+    Customer customer = new Customer
+    {
+        Name = newDTO.Name,
+        Phone = newDTO.Phone,
+        Email = newDTO.Email
+    };
+
+    db.Customers.Add(customer);
+    db.SaveChanges();
+
+    return Results.Created($"/customers/{customer.Id}", new CustomerDTO
+    {
+        Id = customer.Id,
+        Name = customer.Name,
+        Phone = customer.Phone,
+        Email = customer.Email
+    });
+});
+
 // Services
 app.MapGet("/api/services", (HillarysHairDbContext db) =>
 {

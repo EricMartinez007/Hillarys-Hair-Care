@@ -117,4 +117,46 @@ app.MapPost("/api/appointments", (HillarysHairDbContext db, AppointmentCreateDTO
     });
 });
 
+app.MapGet("/api/appointments", (HillarysHairDbContext db) =>
+{
+    return db.Appointments
+        .Include(a => a.Stylist)
+        .Include(a => a.Customer)
+        .Include(a => a.AppointmentServices)
+            .ThenInclude(apptSvc => apptSvc.Service)
+        .OrderByDescending(a => a.ScheduledAt)
+        .Select(a => new AppointmentDTO
+        {
+            Id = a.Id,
+            StylistName = a.Stylist.Name,
+            CustomerName = a.Customer.Name,
+            ScheduledAt = a.ScheduledAt,
+            Status = a.Status,
+            TotalCost = a.TotalCost,
+            Services = a.AppointmentServices.Select(apptSvc => new ServiceDTO
+            {
+                Id = apptSvc.Service.Id,
+                Name = apptSvc.Service.Name,
+                Price = apptSvc.Service.Price
+            }).ToList()
+        })
+        .ToList();
+});
+
+app.MapPatch("/api/appointments/{id}/cancel", (HillarysHairDbContext db, int id) =>
+{
+    Appointment? appointment = db.Appointments.SingleOrDefault(a => a.Id == id);
+
+    if (appointment == null)
+        return Results.NotFound();
+
+    if (appointment.Status == "Cancelled")
+        return Results.BadRequest("Appointment is already cancelled.");
+
+    appointment.Status = "Cancelled";
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
 app.Run();
